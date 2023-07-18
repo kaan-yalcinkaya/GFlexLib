@@ -5,7 +5,7 @@ GCC website: https://gcc.gnu.org/
 # Build
 ```
 cmake -B build -DCMAKE_C_COMPILER=gcc
-cmake --build build
+cmake --build build --config Release
 ```
 
 # GFlexLib
