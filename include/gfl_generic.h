@@ -29,10 +29,10 @@
         int16_t: gflGeneric_number_c,        \
         int32_t: gflGeneric_number_c,        \
         int64_t: gflGeneric_number_c,        \
-        uint8_t: gflGeneric_undefined_c,     \
-        uint16_t: gflGeneric_undefined_c,    \
-        uint32_t: gflGeneric_undefined_c,    \
-        uint64_t: gflGeneric_undefined_c,    \
+        uint8_t: gflGeneric_unsignedNumber_c,     \
+        uint16_t: gflGeneric_unsignedNumber_c,    \
+        uint32_t: gflGeneric_unsignedNumber_c,    \
+        uint64_t: gflGeneric_unsignedNumber_c,    \
         float: gflGeneric_realNumber_c,      \
         double: gflGeneric_realNumber_c,     \
         long double: gflGeneric_undefined_c, \
@@ -97,10 +97,11 @@
  */
 typedef enum gflGenericType_e
 {
-    gflGeneric_number_c = 1, /**< Integer data type. */
-    gflGeneric_realNumber_c, /**< Floating-point data type. */
-    gflGeneric_text_c,       /**< Text (char*) data type. */
-    gflGeneric_undefined_c   /**< Undefined data type. */
+    gflGeneric_number_c = 1,    /**< Integer data type. */
+    gflGeneric_unsignedNumber_c,/**< Unsigned integer data type */
+    gflGeneric_realNumber_c,    /**< Floating-point data type. */
+    gflGeneric_text_c,          /**< Text (char*) data type. */
+    gflGeneric_undefined_c      /**< Undefined data type. */
 } gflGenericType_t;
 
 /**

@@ -43,7 +43,7 @@ __attribute__((constructor)) static void runTimeCheck()
 struct gflGeneric_s{
     gflGenericType_t type;
     union {
-        uintmax_t uintmax;
+        uintmax_t unsignedNumber;
         intmax_t number;
         double realNumber;
         struct {
@@ -92,6 +92,20 @@ gflGeneric_ptr gflGeneric_initialize(void *pObject, enum gflGenericType_e type, 
             pg->text.length = sObject - 1;
             memcpy(pg->text.set, pObject, sObject);
             break;
+        case gflGeneric_unsignedNumber_c:
+            pg = gflAlloc_calloc_m(gflGeneric_t, 1);
+            if(!pg) gflError_throw_m(gflError_outOfMemory_c);
+            pg->type = type;
+            if(sObject == sizeof(uint8_t))
+                pg->unsignedNumber = gflGeneric_cast_m(pObject, uintmax_t, uint8_t);
+            else if(sObject == sizeof(uint16_t))
+                pg->unsignedNumber = gflGeneric_cast_m(pObject, uintmax_t, uint16_t);
+            else if(sObject == sizeof(uint32_t))
+                pg->unsignedNumber = gflGeneric_cast_m(pObject, uintmax_t, uint32_t);
+            else if(sObject == sizeof(uint64_t))
+                pg->unsignedNumber = *(uintmax_t*)pObject;
+            else gflError_throw_m(gflError_invalidSize_c);
+            break;
         case gflGeneric_undefined_c:
         default:
             gflError_throw_m(gflError_undefinedType_c);
@@ -112,6 +126,9 @@ int8_t gflGeneric_compare(gflGeneric_ptr pg1, gflGeneric_ptr pg2)
         case gflGeneric_number_c:
             if(pg1->number == pg2->number) return 0;
             return (pg1->number > pg2->number) ? 1 : -1;
+        case gflGeneric_unsignedNumber_c:
+            if(pg1->unsignedNumber == pg2->unsignedNumber) return 0;
+            return (pg1->unsignedNumber > pg2->unsignedNumber) ? 1 : -1;
         case gflGeneric_realNumber_c:
             if(pg1->realNumber == pg2->realNumber) return 0;
             return (pg1->realNumber > pg2->realNumber) ? 1 : -1;
@@ -142,8 +159,9 @@ uintmax_t gflGeneric_hashCode(gflGeneric_ptr pGeneric)
     if(!pGeneric) gflError_throw_m(gflError_nullPointer_c);
     switch (pGeneric->type) {
         case gflGeneric_number_c:
+        case gflGeneric_unsignedNumber_c:
         case gflGeneric_realNumber_c:
-            return gflGeneric_hash(pGeneric->uintmax);
+            return gflGeneric_hash(pGeneric->unsignedNumber);
         case gflGeneric_text_c: {
             uintmax_t key = 0;
             for (uintmax_t i = 0; i < pGeneric->text.length; ++i) {
@@ -170,6 +188,9 @@ void gflGeneric_display(gflGeneric_ptr pGeneric)
         case gflGeneric_number_c:
             fprintf(stdout, "%"PRIiMAX"\n", pGeneric->number);
             break;
+        case gflGeneric_unsignedNumber_c:
+            fprintf(stdout, "%"PRIuMAX"\n", pGeneric->unsignedNumber);
+            break;
         case gflGeneric_realNumber_c:
             fprintf(stdout, "%lf\n", pGeneric->realNumber);
             break;
@@ -177,6 +198,7 @@ void gflGeneric_display(gflGeneric_ptr pGeneric)
             fprintf(stdout, "%s\n", pGeneric->text.set);
             break;
         case gflGeneric_undefined_c:
+            break;
         default:
             gflError_throw_m(gflError_undefinedType_c);
     }
@@ -190,7 +212,13 @@ gflGeneric_ptr gflGeneric_read(gflGenericType_t type)
             pg = gflAlloc_malloc_m(gflGeneric_t, 1);
             if(!pg) gflError_throw_m(gflError_outOfMemory_c);
             pg->type = type;
-            scanf("%ju", &pg->number);//
+            scanf("%"PRIiMAX, &pg->number);//
+            return pg;
+        case gflGeneric_unsignedNumber_c:
+            pg = gflAlloc_malloc_m(gflGeneric_t, 1);
+            if(!pg) gflError_throw_m(gflError_outOfMemory_c);
+            pg->type = type;
+            scanf("%"PRIuMAX, &pg->unsignedNumber);
             return pg;
         case gflGeneric_realNumber_c:
             pg = gflAlloc_malloc_m(gflGeneric_t, 1);
