@@ -133,10 +133,9 @@ extern void gflGeneric_destroy(gflGeneric_ptr *ppGeneric);
 extern int8_t gflGeneric_compare(gflGeneric_ptr pg1, gflGeneric_ptr pg2);
 
 /**
- * @brief Compare two gflGeneric_t objects case-insensitively.
+ * @brief Compare two gflGeneric_t objects and destroy them.
  *
- * This function compares two gflGeneric_t objects case-insensitively and returns the result of the comparison.
- * This function is intended for text (char*) data type.
+ * This function compares two gflGeneric_t objects and returns the result of the comparison.
  *
  * @param pg1 Pointer to the first gflGeneric_t object for comparison.
  * @param pg2 Pointer to the second gflGeneric_t object for comparison.
@@ -177,9 +176,9 @@ extern enum gflGenericType_e gflGeneric_typeOf(gflGeneric_ptr pGeneric);
 extern void gflGeneric_display(gflGeneric_ptr pGeneric);
 
 /**
- * @brief Print the content of a gflGeneric_t object to the standard output.
+ * @brief Print the content of a gflGeneric_t object to the standard output and destroy the object.
  *
- * This function prints the content of a gflGeneric_t object to the standard output.
+ * This function prints the content of a gflGeneric_t object to the standard output and destroy the object.
  *
  * @param pGeneric Pointer to the gflGeneric_t object.
  */
