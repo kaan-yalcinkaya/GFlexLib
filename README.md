@@ -25,9 +25,9 @@ struct gflGeneric_s: gflGeneric_t<br>
 struct gflGeneric_s*: gflGeneric_ptr<br>
 
 # Macros
-gflGeneric_typeof_m: Finds the type of the given value. is number for all integer values, realNumber for all floating point values, and text for pointer to character types.<br>
-gflGeneric_initialize_m: Assigns the given value to a variable of type gflGeneric_ptr.<br>
-gflGeneric_println_m: Frees the given value from ram after print.<br>
+gflGeneric_typeof_m: Macro to determine the type of a given variable. <br>
+gflGeneric_initialize_m: Macro to initialize a gflGeneric_t object for a given value.<br>
+gflGeneric_println_m: Macro to print the given value.<br>
 gflGeneric_compare_m: Compares two given values ​​and frees them from memory.<br>
 
 # Functions

@@ -15,12 +15,12 @@
 #include <stdint.h>
 
 /**
- * @brief Macro to determine the type of a given variable.
+ * @brief Macro to determine the type of a given value.
  *
- * This macro determines the type of the given variable and maps it to one of the enum constants
+ * This macro determines the type of the given value and maps it to one of the enum constants
  * from gflGenericType_t.
  *
- * @param c The variable for which the type needs to be determined.
+ * @param c The value for which the type needs to be determined.
  * @return The corresponding gflGenericType_t enum value.
  */
 #define gflGeneric_typeOf_m(c)               \
@@ -40,40 +40,57 @@
         default: gflGeneric_undefined_c)
 
 /**
- * @brief Macro to initialize a gflGeneric_t object for a given variable.
+ * @brief Macro to initialize a gflGeneric_t object for a given value.
  *
- * This macro creates and initializes a gflGeneric_t object for a given variable with its type and size.
+ * This macro creates and initializes a gflGeneric_t object for a given value with its type and size.
  *
- * @param c The variable for which the gflGeneric_t object needs to be initialized.
+ * @param c The value for which the gflGeneric_t object needs to be initialized.
  * @return A pointer to the initialized gflGeneric_t object.
  */
 #define gflGeneric_initialize_m(c) \
     gflGeneric_initialize(&((typeof(c)){(c)}), gflGeneric_typeOf_m((c)), sizeof((c)))
 
 /**
- * @brief Macro to print the content of a gflGeneric_t object and a newline character.
+ * @brief Macro to print the given value.
  *
- * This macro prints the content of a gflGeneric_t object followed by a newline character.
+ * This macro initialize a new generic object for the given value and print the value.
+ * The temporary object created after printing is freed.
  *
- * @param c The variable for which the gflGeneric_t object needs to be printed.
+ * @param c The value for which the gflGeneric_t object needs to be printed.
  */
 #define gflGeneric_println_m(c) \
     gflGeneric_println(gflGeneric_initialize_m((c)))
 
 /**
- * @brief Macro to compare two gflGeneric_t objects.
+ * @brief Macro to compare two values.
  *
- * This macro compares two gflGeneric_t objects and returns the result of the comparison.
+ * This macro initialize new generic objects to compares two values and returns the result of the comparison.
+ * The temporary objects created afted comparison is freed.
  *
- * @param c1 The first variable for comparison.
- * @param c2 The second variable for comparison.
+ * @param c1 The first value for comparison.
+ * @param c2 The second value for comparison.
  * @return An integer indicating the result of the comparison:
- *         - 0 if the objects are equal.
- *         - A negative value if the first object is less than the second.
- *         - A positive value if the first object is greater than the second.
+ *         - 0 if the values are equal.
+ *         - A negative value if the first value is less than the second.
+ *         - A positive value if the first value is greater than the second.
  */
 #define gflGeneric_compare_m(c1, c2) \
     gflGeneric_ccompare(gflGeneric_initialize_m((c1)), gflGeneric_initialize_m((c2)))
+
+
+/**
+ * @def gflGeneric_assign_m(pgeneric, c)
+ *
+ * @brief Macro to assign a value to a gflGeneric_t object.
+ *
+ * This macro assigns a value to a gflGeneric_t object using the gflGeneric_assign function. The macro
+ * takes care of determining the type and size of the value automatically.
+ *
+ * @param pgeneric Pointer to the gflGeneric_t object to which the value will be assigned.
+ * @param c The value that will be assigned to the gflGeneric_t object.
+ */
+#define gflGeneric_assign_m(pgeneric, c) \
+    gflGeneric_assign((pgeneric), &((typeof(c)){(c)}), gflGeneric_typeOf_m((c)), sizeof((c)))
 
 /**
  * @brief Enum defining the different types of generic data.
@@ -198,5 +215,33 @@ extern void gflGeneric_println(gflGeneric_ptr pGeneric);
  * @return A pointer to the read gflGeneric_t object.
  */
 extern gflGeneric_ptr gflGeneric_read(gflGenericType_t type);
+
+/**
+ * @brief Assign a value to a gflGeneric_t object.
+ *
+ * This function assigns a value to a gflGeneric_t object. The value is provided as a void pointer,
+ * and the function also requires the type and size information of the value. The function takes care
+ * of updating the gflGeneric_t object with the new value and its type information. 
+ *
+ * @param pGeneric Pointer to the gflGeneric_t object to which the value will be assigned.
+ * @param pObject Pointer to the value that will be assigned to the gflGeneric_t object.
+ * @param type The type of the value being assigned (gflGenericType_t).
+ * @param sObject The size of the value being assigned.
+ * @return A pointer to the updated gflGeneric_t object after the assignment.
+ */
+extern gflGeneric_ptr 
+gflGeneric_assign(gflGeneric_ptr pGeneric, void *pObject, gflGenericType_t type, uintmax_t sObject);
+
+/**
+ * @brief Set a pointer to null in the gflGeneric_s struct.
+ *
+ * This function sets the pointer in the gflGeneric_s struct to null.
+ *
+ * @param pGeneric Pointer to the gflGeneric_s struct.
+ * @return void* A pointer to null.
+ *
+ * @note The function does not check if pGeneric is a valid pointer. Ensure pGeneric is valid before calling this function.
+ */
+extern void* gflGeneric_null(gflGeneric_ptr pGeneric);
 
 #endif // GFL_GFL_GENERIC_H

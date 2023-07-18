@@ -3,6 +3,10 @@
 //
 
 
+#ifndef __GNUC__
+#error "GNU C Compiler is required."
+#endif //__GNUC__
+
 
 #if _WIN32 || _WIN64
 #if _WIN64
@@ -28,12 +32,11 @@
 #include <stdio.h>
 #include <inttypes.h>
 
-#ifdef __GNUC__
-__attribute__((constructor)) static void runTimeCheck(){
+__attribute__((constructor)) static void runTimeCheck()
+{
     if(sizeof(uintmax_t) != sizeof(double))
         fprintf(stderr, "Error: size of uintmax_t and sizeof double not equal\n"), exit(EXIT_FAILURE);
 }
-#endif
 
 #define gflGeneric_cast_m(obj, t1, t2) (t1)(*(t2*)(obj))
 
@@ -223,4 +226,17 @@ int8_t gflGeneric_ccompare(gflGeneric_ptr pg1, gflGeneric_ptr pg2)
     int8_t ret = gflGeneric_compare(pg1, pg2);
     gflGeneric_destroy(&pg1), gflGeneric_destroy(&pg2);
     return ret;
+}
+
+gflGeneric_ptr
+gflGeneric_assign(gflGeneric_ptr pGeneric, void *pObject, gflGenericType_t type, uintmax_t sObject)
+{
+    if(pGeneric) gflGeneric_destroy(&pGeneric);
+    return gflGeneric_initialize(pObject, type, sObject);
+}
+
+void* gflGeneric_null(gflGeneric_ptr pGeneric)
+{
+    if(pGeneric) gflGeneric_destroy(&pGeneric);
+    return NULL;
 }
