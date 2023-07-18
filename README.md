@@ -129,3 +129,60 @@ extern void gflGeneric_println(gflGeneric_ptr pGeneric);
 extern gflGeneric_ptr gflGeneric_read(gflGenericType_t type);
 
 ```
+
+# Sample Program
+
+```
+#include <gfl_generic.h>
+#include <gfl_memalloc.h>
+
+typedef struct {
+    gflGeneric_ptr first_name, last_name, username, password;
+}user_t;
+
+user_t *user_init(gflGeneric_ptr fn, gflGeneric_ptr ln, gflGeneric_ptr un, gflGeneric_ptr p)
+{
+    user_t *u = gflAlloc_malloc_m(user_t, 1);
+    u->first_name = fn, u->last_name = ln, u->username = un, u->password = p;
+    return u;
+}
+
+void user_print(user_t *u)
+{
+    gflGeneric_println_m("User info: ");
+    gflGeneric_println_m("First Name: ");
+    gflGeneric_display(u->first_name);
+    gflGeneric_println_m("Last Name: ");
+    gflGeneric_display(u->last_name);
+    gflGeneric_println_m("Username: ");
+    gflGeneric_display(u->username);
+}
+
+int8_t user_compare(user_t *pu1, user_t *pu2)
+{
+    if(!gflGeneric_compare(pu1->first_name, pu2->first_name) &&
+    !gflGeneric_compare(pu1->last_name, pu2->last_name) &&
+    !gflGeneric_compare(pu1->username, pu2->username) &&
+    !gflGeneric_compare(pu1->password, pu2->password)
+            ) return 0;
+    return 1;
+}
+
+int main(void)
+{
+    user_t *pu1 = user_init(gflGeneric_initialize_m("Arthur"), gflGeneric_initialize_m("Morgan"),
+                            gflGeneric_initialize_m("AM1899"), gflGeneric_initialize_m(1899));
+    user_t *pu2 = user_init(gflGeneric_initialize_m("John"), gflGeneric_initialize_m("Marston"),
+                            gflGeneric_initialize_m("JM1899"), gflGeneric_initialize_m(1234));
+    user_t *pu3 = user_init(gflGeneric_initialize_m("Arthur"), gflGeneric_initialize_m("Morgan"),
+                            gflGeneric_initialize_m("AM1899"), gflGeneric_initialize_m(1899));
+    gflGeneric_println_m(user_compare(pu1, pu2));
+    gflGeneric_println_m(user_compare(pu1, pu3));
+
+    user_print(pu1);
+    gflGeneric_println_m("");
+    user_print(pu2);
+
+    gflGeneric_println_m(gflGeneric_compare_m("Arthur", "John"));
+}
+```
