@@ -2,7 +2,6 @@
 // Created by kaan-yalcinkaya on 18.07.2023.
 //
 
-
 /**
  * @file gfl_generic.h
  *
@@ -12,7 +11,7 @@
 #ifndef GFL_GFL_GENERIC_H
 #define GFL_GFL_GENERIC_H
 
-#include <stdint.h>
+#include <gfl_utils.h>
 
 /**
  * @brief Macro to determine the type of a given value.
@@ -23,20 +22,22 @@
  * @param c The value for which the type needs to be determined.
  * @return The corresponding gflGenericType_t enum value.
  */
-#define gflGeneric_typeOf_m(c)               \
-    _Generic((c),                            \
-        int8_t: gflGeneric_number_c,         \
-        int16_t: gflGeneric_number_c,        \
-        int32_t: gflGeneric_number_c,        \
-        int64_t: gflGeneric_number_c,        \
-        uint8_t: gflGeneric_unsignedNumber_c,     \
-        uint16_t: gflGeneric_unsignedNumber_c,    \
-        uint32_t: gflGeneric_unsignedNumber_c,    \
-        uint64_t: gflGeneric_unsignedNumber_c,    \
-        float: gflGeneric_realNumber_c,      \
-        double: gflGeneric_realNumber_c,     \
-        long double: gflGeneric_undefined_c, \
-        char *: gflGeneric_text_c,           \
+#define gflGeneric_typeOf_m(c)                 \
+    _Generic((c),                              \
+        int8_t: gflGeneric_number_c,           \
+        int16_t: gflGeneric_number_c,          \
+        int32_t: gflGeneric_number_c,          \
+        int64_t: gflGeneric_number_c,          \
+        long_t: gflGeneric_number_c,           \
+        uint8_t: gflGeneric_unsignedNumber_c,  \
+        uint16_t: gflGeneric_unsignedNumber_c, \
+        uint32_t: gflGeneric_unsignedNumber_c, \
+        uint64_t: gflGeneric_unsignedNumber_c, \
+        ulong_t: gflGeneric_unsignedNumber_c,  \
+        float: gflGeneric_realNumber_c,        \
+        double: gflGeneric_realNumber_c,       \
+        long double: gflGeneric_undefined_c,   \
+        char *: gflGeneric_text_c,             \
         default: gflGeneric_undefined_c)
 
 /**
@@ -49,7 +50,6 @@
  */
 #define gflGeneric_initialize_m(c) \
     gflGeneric_initialize(&((typeof(c)){(c)}), gflGeneric_typeOf_m((c)), sizeof((c)))
-
 /**
  * @brief Macro to print the given value.
  *
@@ -77,7 +77,6 @@
 #define gflGeneric_compare_m(c1, c2) \
     gflGeneric_ccompare(gflGeneric_initialize_m((c1)), gflGeneric_initialize_m((c2)))
 
-
 /**
  * @def gflGeneric_assign_m(pgeneric, c)
  *
@@ -97,11 +96,11 @@
  */
 typedef enum gflGenericType_e
 {
-    gflGeneric_number_c = 1,    /**< Integer data type. */
-    gflGeneric_unsignedNumber_c,/**< Unsigned integer data type */
-    gflGeneric_realNumber_c,    /**< Floating-point data type. */
-    gflGeneric_text_c,          /**< Text (char*) data type. */
-    gflGeneric_undefined_c      /**< Undefined data type. */
+    gflGeneric_number_c = 1,     /**< Integer data type. */
+    gflGeneric_unsignedNumber_c, /**< Unsigned integer data type */
+    gflGeneric_realNumber_c,     /**< Floating-point data type. */
+    gflGeneric_text_c,           /**< Text (char*) data type. */
+    gflGeneric_undefined_c       /**< Undefined data type. */
 } gflGenericType_t;
 
 /**
@@ -222,7 +221,7 @@ extern gflGeneric_ptr gflGeneric_read(gflGenericType_t type);
  *
  * This function assigns a value to a gflGeneric_t object. The value is provided as a void pointer,
  * and the function also requires the type and size information of the value. The function takes care
- * of updating the gflGeneric_t object with the new value and its type information. 
+ * of updating the gflGeneric_t object with the new value and its type information.
  *
  * @param pGeneric Pointer to the gflGeneric_t object to which the value will be assigned.
  * @param pObject Pointer to the value that will be assigned to the gflGeneric_t object.
@@ -230,7 +229,7 @@ extern gflGeneric_ptr gflGeneric_read(gflGenericType_t type);
  * @param sObject The size of the value being assigned.
  * @return A pointer to the updated gflGeneric_t object after the assignment.
  */
-extern gflGeneric_ptr 
+extern gflGeneric_ptr
 gflGeneric_assign(gflGeneric_ptr pGeneric, void *pObject, gflGenericType_t type, uintmax_t sObject);
 
 /**
@@ -243,6 +242,6 @@ gflGeneric_assign(gflGeneric_ptr pGeneric, void *pObject, gflGenericType_t type,
  *
  * @note The function does not check if pGeneric is a valid pointer. Ensure pGeneric is valid before calling this function.
  */
-extern void* gflGeneric_null(gflGeneric_ptr pGeneric);
+extern void *gflGeneric_null(gflGeneric_ptr pGeneric);
 
 #endif // GFL_GFL_GENERIC_H

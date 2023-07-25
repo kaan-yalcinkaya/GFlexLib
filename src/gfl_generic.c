@@ -3,36 +3,17 @@
 //
 
 
-#ifndef __GNUC__
-#error "GNU C Compiler is required."
-#endif //__GNUC__
-
-
-#if _WIN32 || _WIN64
-#if _WIN64
-#define ENV64BIT
-#else
-#define ENV32BIT
-#endif
-#endif
-
-#if __GNUC__
-#if __x86_64__ || __ppc64__
-#define ENV64BIT
-#else
-#define ENV32BIT
-#endif
-#endif
 
 #include <gfl_generic.h>
 #include <gfl_memalloc.h>
 #include <gfl_error.h>
+#include <gfl_utils.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <inttypes.h>
 
-__attribute__((constructor)) static void runTimeCheck()
+__attribute__((constructor)) static void gflRunTimeCheck()
 {
     if(sizeof(uintmax_t) != sizeof(double))
         fprintf(stderr, "Error: size of uintmax_t and sizeof double not equal\n"), exit(EXIT_FAILURE);
@@ -112,12 +93,14 @@ gflGeneric_ptr gflGeneric_initialize(void *pObject, enum gflGenericType_e type, 
     }
     return pg;
 }
+
 void gflGeneric_destroy(gflGeneric_ptr *ppGeneric)
 {
     if(!ppGeneric || !*ppGeneric) gflError_throw_m(gflError_nullPointer_c);
     free(*ppGeneric);
     *ppGeneric = NULL;
 }
+
 int8_t gflGeneric_compare(gflGeneric_ptr pg1, gflGeneric_ptr pg2)
 {
     if(!pg1 || !pg2) gflError_throw_m(gflError_nullPointer_c);
@@ -142,14 +125,19 @@ int8_t gflGeneric_compare(gflGeneric_ptr pg1, gflGeneric_ptr pg2)
 
 static inline uintmax_t gflGeneric_hash(uintmax_t key)
 {
-#ifdef ENV64BIT
-    key = (key ^ (key >> 30)) * UINT64_C(0xbf58476d1ce4e5b9);
-    key = (key ^ (key >> 27)) * UINT64_C(0x94d049bb133111eb);
-    key = key ^ (key >> 31);
-#else
-    key = ((key >> 16) ^ key) * 0x119de1f3;
-    key = ((key >> 16) ^ key) * 0x119de1f3;
-    key = (x >> 16) ^ key;
+
+#if defined(gflGeneric_env_m)
+    #if gflGeneric_env_m == 64
+        key = (key ^ (key >> 30)) * UINT64_C(0xbf58476d1ce4e5b9);
+        key = (key ^ (key >> 27)) * UINT64_C(0x94d049bb133111eb);
+        key = key ^ (key >> 31);
+    #elif gflGeneric_env_m == 32
+        key = ((key >> 16) ^ key) * 0x119de1f3;
+        key = ((key >> 16) ^ key) * 0x119de1f3;
+        key = (x >> 16) ^ key;
+    #endif
+#else 
+    #error "Error"
 #endif
     return key;
 }

@@ -5,9 +5,10 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED 11)
 
 file(GLOB SRC ${CMAKE_SOURCE_DIR}/src/*.c)
-include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(
+    ${CMAKE_SOURCE_DIR}/include 
+    ${CMAKE_SOURCE_DIR}/Containers/include
+    )
 
 add_library(GFlex ${SRC})
-#add_executable(main test/main.c)
-
-#target_link_libraries(main GFlex)
+#add_subdirectory(Containers)
