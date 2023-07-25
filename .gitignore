@@ -1,5 +1,6 @@
 build/
 test/
+cmake-build-debug/
 # Prerequisites
 *.d
 

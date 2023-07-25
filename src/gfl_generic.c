@@ -27,6 +27,7 @@ struct gflGeneric_s{
         uintmax_t unsignedNumber;
         intmax_t number;
         double realNumber;
+        bool boolean;
         struct {
             uintmax_t length;
             char set[];
@@ -40,6 +41,12 @@ gflGeneric_ptr gflGeneric_initialize(void *pObject, enum gflGenericType_e type, 
     if(sObject < 1) gflError_throw_m(gflError_invalidSize_c);
     gflGeneric_ptr pg = NULL;
     switch (type) {
+        case gflGeneric_boolean_c:
+            pg = gflAlloc_malloc_m(gflGeneric_t, 1);
+            if(!pg) gflError_throw_m(gflError_outOfMemory_c);
+            pg->type = type;
+            pg->boolean = *(bool*)pObject;
+            break;
         case gflGeneric_number_c:
             pg = gflAlloc_malloc_m(gflGeneric_t, 1);
             if(!pg) gflError_throw_m(gflError_outOfMemory_c);
@@ -106,6 +113,9 @@ int8_t gflGeneric_compare(gflGeneric_ptr pg1, gflGeneric_ptr pg2)
     if(!pg1 || !pg2) gflError_throw_m(gflError_nullPointer_c);
     if(pg1->type != pg2->type) gflError_throw_m(gflError_incompatibleTypes_c);
     switch (pg1->type) {
+        case gflGeneric_boolean_c:
+            if(pg1->boolean == pg2->boolean) return 0;
+            return (pg1->boolean > pg2->boolean) ? 1 : -1;
         case gflGeneric_number_c:
             if(pg1->number == pg2->number) return 0;
             return (pg1->number > pg2->number) ? 1 : -1;
@@ -125,7 +135,6 @@ int8_t gflGeneric_compare(gflGeneric_ptr pg1, gflGeneric_ptr pg2)
 
 static inline uintmax_t gflGeneric_hash(uintmax_t key)
 {
-
 #if defined(gflGeneric_env_m)
     #if gflGeneric_env_m == 64
         key = (key ^ (key >> 30)) * UINT64_C(0xbf58476d1ce4e5b9);
@@ -146,6 +155,7 @@ uintmax_t gflGeneric_hashCode(gflGeneric_ptr pGeneric)
 {
     if(!pGeneric) gflError_throw_m(gflError_nullPointer_c);
     switch (pGeneric->type) {
+        case gflGeneric_boolean_c:
         case gflGeneric_number_c:
         case gflGeneric_unsignedNumber_c:
         case gflGeneric_realNumber_c:
@@ -173,6 +183,12 @@ void gflGeneric_display(gflGeneric_ptr pGeneric)
 {
     if(!pGeneric) gflError_throw_m(gflError_nullPointer_c);
     switch (pGeneric->type) {
+        case gflGeneric_boolean_c:
+            if(pGeneric->boolean)
+                fprintf(stdout, "true\n");
+            else
+                fprintf(stdout, "false\n");
+            break;
         case gflGeneric_number_c:
             fprintf(stdout, "%"PRIiMAX"\n", pGeneric->number);
             break;
@@ -196,6 +212,7 @@ gflGeneric_ptr gflGeneric_read(gflGenericType_t type)
 {
     gflGeneric_ptr pg = NULL;
     switch (type) {
+        case gflGeneric_boolean_c:
         case gflGeneric_number_c:
             pg = gflAlloc_malloc_m(gflGeneric_t, 1);
             if(!pg) gflError_throw_m(gflError_outOfMemory_c);

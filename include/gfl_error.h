@@ -28,11 +28,12 @@ gflError_handle((error), __func__)
  * @brief Enum defining the different error codes.
  */
 typedef enum gflError_e {
-    gflError_outOfMemory_c,       /**< Error: Out of memory. */
-    gflError_nullPointer_c,       /**< Error: Null pointer encountered. */
-    gflError_undefinedType_c,     /**< Error: Undefined data type. */
-    gflError_invalidSize_c,       /**< Error: Invalid size specified. */
-    gflError_incompatibleTypes_c  /**< Error: Incompatible data types. */
+    gflError_outOfMemory_c = 1,       /**< Error: Out of memory. */
+    gflError_nullPointer_c,           /**< Error: Null pointer encountered. */
+    gflError_undefinedType_c,         /**< Error: Undefined data type. */
+    gflError_invalidSize_c,           /**< Error: Invalid size specified. */
+    gflError_incompatibleTypes_c,     /**< Error: Incompatible data types. */
+    gflError_indexOutOfBounds_c       /**< Error: Index out of bounds. */
 } gflError_t;
 
 /**

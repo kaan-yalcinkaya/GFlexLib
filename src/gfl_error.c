@@ -13,19 +13,22 @@ noreturn void gflError_handle(gflError_t error, const char *func)
 {
     switch (error) {
         case gflError_outOfMemory_c:
-            gflError_print_m("OutOfMemory");
+            gflError_print_m("Out Of Memory");
             exit(EXIT_FAILURE);
         case gflError_nullPointer_c:
-            gflError_print_m("NullPointer");
+            gflError_print_m("Null Pointer");
             exit(EXIT_FAILURE);
         case gflError_undefinedType_c:
-            gflError_print_m("UndefinedType");
+            gflError_print_m("Undefined Type");
             exit(EXIT_FAILURE);
         case gflError_invalidSize_c:
-            gflError_print_m("InvalidSize");
+            gflError_print_m("Invalid Size");
             exit(EXIT_FAILURE);
         case gflError_incompatibleTypes_c:
-            gflError_print_m("IncompatibleTypes");
+            gflError_print_m("Incompatible Types");
+            exit(EXIT_FAILURE);
+        case gflError_indexOutOfBounds_c:
+            gflError_print_m("Index Out Of Bounds");
             exit(EXIT_FAILURE);
         default:
             gflError_print_m("NoError");

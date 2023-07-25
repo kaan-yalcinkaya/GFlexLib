@@ -24,6 +24,7 @@
  */
 #define gflGeneric_typeOf_m(c)                 \
     _Generic((c),                              \
+        _Bool : gflGeneric_boolean_c,           \
         int8_t: gflGeneric_number_c,           \
         int16_t: gflGeneric_number_c,          \
         int32_t: gflGeneric_number_c,          \
@@ -49,7 +50,7 @@
  * @return A pointer to the initialized gflGeneric_t object.
  */
 #define gflGeneric_initialize_m(c) \
-    gflGeneric_initialize(&((typeof(c)){(c)}), gflGeneric_typeOf_m((c)), sizeof((c)))
+    gflGeneric_initialize(&((typeof(c)){(c)}), gflGeneric_typeOf_m((c)), sizeof(typeof((c))))
 /**
  * @brief Macro to print the given value.
  *
@@ -100,6 +101,7 @@ typedef enum gflGenericType_e
     gflGeneric_unsignedNumber_c, /**< Unsigned integer data type */
     gflGeneric_realNumber_c,     /**< Floating-point data type. */
     gflGeneric_text_c,           /**< Text (char*) data type. */
+    gflGeneric_boolean_c,        /**< Boolean data type. */
     gflGeneric_undefined_c       /**< Undefined data type. */
 } gflGenericType_t;
 
